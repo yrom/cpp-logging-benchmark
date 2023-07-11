@@ -27,6 +27,13 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build ./build --config Release --target run_benchmark
 ```
 
+Run on Windows (by [Mingw-w64 toolchain on MSYS2](https://packages.msys2.org/groups/mingw-w64-x86_64-toolchain)): 
+
+```sh
+cmake.exe -DCMAKE_C_COMPILER:FILEPATH=C:\msys64\mingw64\bin\gcc.exe -DCMAKE_CXX_COMPILER:FILEPATH=C:\msys64\mingw64\bin\g++.exe -B build -DCMAKE_BUILD_TYPE=Release
+cmake.exe --build build --config Release --target run_benchmark
+```
+
 Run on Android arm64 device:
 
 ```sh

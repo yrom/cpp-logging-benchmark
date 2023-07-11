@@ -31,12 +31,16 @@ FetchContent_Declare(
 set(BENCHMARK_ENABLE_TESTING OFF CACHE INTERNAL "")
 set(BENCHMARK_ENABLE_INSTALL OFF CACHE INTERNAL "")
 set(BENCHMARK_INSTALL_DOCS OFF CACHE INTERNAL "")
-
+if(MINGW)
+    set(BENCHMARK_ENABLE_WERROR OFF CACHE INTERNAL "")
+endif(MINGW)
 FetchContent_MakeAvailable(benchmark)
 set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "")
 set(WITH_GFLAGS OFF CACHE INTERNAL "")
 set(WITH_SYMBOLIZE OFF CACHE INTERNAL "")
 set(WITH_UNWIND OFF CACHE INTERNAL "")
+set(WITH_GTEST OFF CACHE INTERNAL "")
+set(WITH_PKGCONFIG OFF CACHE INTERNAL "")
 FetchContent_MakeAvailable(glog)
 
 set(SPDLOG_INSTALL OFF CACHE INTERNAL "")
@@ -57,6 +61,14 @@ if(ANDROID)
         COMMAND adb push log_test /data/local/tmp/
         COMMAND adb shell chmod 777 /data/local/tmp/log_test
         COMMAND adb shell \"cd /data/local/tmp\; test -d test && rm -r ./test || true\; mkdir ./test\; ./log_test --benchmark_min_time=0.3s --benchmark_counters_tabular=true\"
+        DEPENDS log_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    )
+elseif(WIN32)
+    add_custom_target(run_benchmark 
+        COMMAND IF exist test ( rmdir /s /q test )
+        COMMAND mkdir test
+        COMMAND log_test --benchmark_min_time=1s --benchmark_counters_tabular=true
         DEPENDS log_test
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
